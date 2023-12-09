@@ -5,6 +5,8 @@ import { App } from './App';
 import * as serviceWorker from './serviceWorker';
 import { theme } from 'styles/theme';
 import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { store } from 'store';
 
 const container = document.getElementById('root');
 if (!container) throw new Error('Failed to find the root element');
@@ -12,12 +14,14 @@ const root = ReactDOM.createRoot(container);
 
 root.render(
   <React.StrictMode>
-    <ChakraProvider theme={theme}>
-      <ColorModeScript />
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </ChakraProvider>
+    <Provider store={store}>
+      <ChakraProvider theme={theme}>
+        <ColorModeScript />
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ChakraProvider>
+    </Provider>
   </React.StrictMode>
 );
 

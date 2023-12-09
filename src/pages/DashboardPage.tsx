@@ -4,63 +4,62 @@ import {
   Button,
   Card,
   CardBody,
-  Image,
   Box,
   CardFooter,
   Grid,
   ButtonGroup,
+  HStack,
+  Skeleton,
+  CircularProgress,
 } from '@chakra-ui/react';
+import { RiRadioButtonLine } from 'react-icons/ri';
+import { useGetUsersQuery } from 'store/dummy-api/dummy.api';
+import { UserCard } from 'components/UserCard';
+import { useDispatch } from 'react-redux';
+import { Header } from 'components/Header';
 
-export const DashboardPage = () => (
-  <>
-    <Box height={'100vh'} padding={'20px 20px'} backgroundColor={'cyan.50'}>
-      <Text fontSize={'2xl'}>Users Dashboard</Text>
-      <Box>
-        <Card colorScheme={'facebook'} size={'sm'} maxW={'sm'}>
-          <CardBody>
-            <Grid gridTemplateColumns={'100px 1fr'} columnGap={'2'}>
-              <Box
-                backgroundImage="url(https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fHww)"
-                backgroundSize={'cover'}
-                backgroundPosition={'center'}
-                borderRadius={'50%'}
-                minW={'100px'}
-                minH={'100px'}
-                gridColumn={1}
-                gridRow={'1/3'}
-              />
-              <Text fontSize={'lg'} gridColumn={2}>
-                Konstantin Bobkov
-              </Text>
-              <Grid
-                gridColumn={2}
-                gridTemplateColumns={'min-content 1fr'}
-                gap={1}
-                alignSelf={'end'}
-              >
-                <Text color={'blackAlpha.600'} width={'min-content'}>
-                  Age:
-                </Text>
-                <Text color={'blackAlpha.900'}>50</Text>
-                <Text color={'blackAlpha.600'} width={'min-content'}>
-                  Email:
-                </Text>
-                <Text color={'blackAlpha.900'}>mrglorf@gmail.com</Text>
-              </Grid>
-            </Grid>
-          </CardBody>
-          <CardFooter>
-            <ButtonGroup>
-              <Button variant="solid" colorScheme="telegram" size={'xs'}>
-                Profile page
-              </Button>
-              <Button variant="solid" colorScheme="telegram" size={'xs'}>
-                User's posts
-              </Button>
-            </ButtonGroup>
-          </CardFooter>
-        </Card>
-      </Box>
+export const DashboardPage = () => {
+  const { isLoading, isError, isSuccess, data } = useGetUsersQuery('');
+  const dispatch = useDispatch();
+
+  const usersToDispay =
+    data &&
+    data.map((item, index) => {
+      return (
+        <UserCard
+          key={index}
+          id={item.id}
+          image={item.image}
+          lastName={item.lastName}
+          firstName={item.firstName}
+          email={item.email}
+          age={item.age}
+        />
+      );
+    });
+
+  return (
+    <Box minH={'100vh'} padding={'20px 20px'} backgroundColor={'#3e3e42'}>
+      <Header title={'Users DashBoard'} />
+      <Skeleton isLoaded={!isLoading}>
+        <Grid
+          templateColumns={'repeat(auto-fill, minmax(300px, 1fr))'}
+          gap={'16px'}
+        >
+          {usersToDispay}
+        </Grid>
+      </Skeleton>
+      <Card
+        position={'fixed'}
+        right={'8px'}
+        bottom={'8px'}
+        align={'flex-start'}
+      >
+        <CardBody p={'2px'} display={'flex'}>
+          <RiRadioButtonLine color="green" />
+          <Text fontSize={'x-small'}>Online</Text>
+        </CardBody>
+      </Card>
     </Box>
-  </>
-);
+  );
+};
